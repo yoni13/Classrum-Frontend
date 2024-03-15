@@ -20,7 +20,7 @@ function App() {
                 homeworkTitleName.innerText = homeworkInput.value;
                 homeworkItem.appendChild(homeworkTitleName);
 
-                fetch('subject', {
+                fetch('https://nw-classrum.nicewhite.xyz/subject', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ function App() {
 
   }
   return (
-<body onload="onloaded()">
+<body>
 <h1 id="homeworkTitle">Homeworks</h1>
 <div id="homeworkInputArea">
     <input type="text" id="homeworkInput" placeholder="Add new homework..."></input>
