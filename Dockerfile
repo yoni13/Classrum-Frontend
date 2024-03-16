@@ -4,6 +4,7 @@ FROM node:18-alpine
 
 WORKDIR /usr/src/app
 
+COPY public/ /usr/src/app/public
 COPY src/ /usr/src/app/src
 COPY package.json /usr/src/app
 
