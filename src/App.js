@@ -20,7 +20,7 @@ function App() {
                 homeworkTitleName.innerText = homeworkInput.value;
                 homeworkItem.appendChild(homeworkTitleName);
 
-                fetch('https://nw-classrum.nicewhite.xyz/subject', {
+                fetch('https://nw-classrum-api.nicewhite.xyz/subject', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ function App() {
                 homeworkTitleName.innerText = homeworkInput.value;
                 homeworkItem.appendChild(homeworkTitleName);
 
-                fetch('https://nw-classrum.nicewhite.xyz/subject', {
+                fetch('https://nw-classrum-api.nicewhite.xyz/subject', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
