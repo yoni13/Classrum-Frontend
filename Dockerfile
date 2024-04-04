@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18-alpine as builder
 
 WORKDIR /usr/app
 COPY ./ /usr/app
@@ -9,7 +9,10 @@ RUN npm install -g serve
 
 RUN npm run build
 
-EXPOSE 3000
-ENTRYPOINT [ "serve -s build" ]
+FROM nginx:1.19.0
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
+COPY --from=builder /app/build .
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
 
 
