@@ -4,7 +4,8 @@ WORKDIR /usr/app
 COPY . /usr/app
 
 RUN bun install
-RUN bun run build
+RUN bun build ./src/index.js --outdir ./build
+RUN cp -r ./public/* ./build
 
 FROM nginx:1.27.3-alpine
 WORKDIR /usr/share/nginx/html
