@@ -1,4 +1,4 @@
-FROM node:18-alpine as builder
+FROM oven/bun:latest as builder
 
 WORKDIR /usr/app
 COPY . /usr/app
