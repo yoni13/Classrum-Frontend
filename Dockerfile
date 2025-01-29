@@ -3,12 +3,10 @@ FROM node:18-alpine as builder
 WORKDIR /usr/app
 COPY . /usr/app
 
-RUN npm install
+RUN bun install
+RUN bun run build
 
-
-RUN npm run build
-
-FROM nginx:1.19.0
+FROM nginx:1.27.3-alpine
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY --from=builder /usr/app/build .

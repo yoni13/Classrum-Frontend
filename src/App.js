@@ -1,103 +1,80 @@
+import React, { useState } from 'react';
 import './App.css';
 
 function App() {
-  function handleClick() {
-    let homeworkInput = document.getElementById("homeworkInput");
-    let homeworkList = document.getElementById("homeworkList");
-    let homeworkItem = document.createElement("div");
-    let homeworkTitleName = document.createElement("h1");
-    let homework = homeworkInput.value;
-        if (homework.length > 0) {
-            try{
-                
-                homeworkList.appendChild(document.createElement("br"));
+    const [homeworks, setHomeworks] = useState([]);
+    const [inputValue, setInputValue] = useState('');
 
-                
-                homeworkItem.className = "homeworkItem";
+    const handleInputChange = (event) => {
+        setInputValue(event.target.value);
+    };
 
-                homeworkTitleName = document.createElement("h1");
-                homeworkTitleName.className = "homeworkTitleName";
-                homeworkTitleName.innerText = homeworkInput.value;
-                homeworkItem.appendChild(homeworkTitleName);
-
-                fetch('https://nw-classrum-api.nicewhite.xyz/subject', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        'text': homeworkInput.value,
-                    }),
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        let nextclasstime = data['nextclasstime'];
-                        let homeworkNextTimeDateBG = document.createElement("div");
-                        homeworkNextTimeDateBG.className = "homeworkNextTimeDateBG";
-                        homeworkNextTimeDateBG.innerText = nextclasstime;
-                        homeworkItem.appendChild(homeworkNextTimeDateBG);
+    const addHomework = () => {
+        if (inputValue.trim() !== "") {
+            fetch('https://nw-classrum-api.nicewhite.xyz/subject', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'text': inputValue,
+                }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                    )
-
-                homeworkList.appendChild(homeworkItem);
-                homeworkList.appendChild(document.createElement("br"));
-                console.log("Homework added");
-                
-            }
-            catch(err){
-
-                homeworkList = document.createElement("div");
-                homeworkList.id = "homeworkList";
-                document.body.appendChild(homeworkList);
-                console.log("Homework list created");
-                
-                homeworkList.appendChild(document.createElement("br"));
-
-                let homeworkItem = document.createElement("div");
-                homeworkItem.className = "homeworkItem";
-
-                homeworkTitleName = document.createElement("h1");
-                homeworkTitleName.className = "homeworkTitleName";
-                homeworkTitleName.innerText = homeworkInput.value;
-                homeworkItem.appendChild(homeworkTitleName);
-
-                fetch('https://nw-classrum-api.nicewhite.xyz/subject', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        'text': homeworkInput.value,
-                    }),
+                    return response.json();
                 })
-
-                    .then((response) => response.json())
-                    .then((data) => {
-                        let nextclasstime = data['nextclasstime'];
-                        let homeworkNextTimeDateBG = document.createElement("div");
-                        homeworkNextTimeDateBG.className = "homeworkNextTimeDateBG";
-                        homeworkNextTimeDateBG.innerText = nextclasstime;
-                        homeworkItem.appendChild(homeworkNextTimeDateBG);
-                    }
-                    )
-
-                homeworkList.appendChild(homeworkItem);
-                homeworkList.appendChild(document.createElement("br"));
-                console.log("Homework added");
-            }
-            homeworkInput.value = "";
+                .then(data => {
+                    const newHomework = {
+                        title: inputValue,
+                        nextClassTime: data.nextclasstime,
+                    };
+                    setHomeworks([...homeworks, newHomework]);
+                    setInputValue(''); // Clear input after adding
+                })
+                .catch(error => {
+                    console.error("Fetch error:", error);
+                    alert("Failed to add homework. Please try again later."); // User-friendly error message
+                });
         }
+    };
 
-  }
-  return (
+    const handleSubmit = (event) => {
+        event.preventDefault(); // Prevent default form submission
+        addHomework();
+    };
 
-      <><h1 id="homeworkTitle">Homeworks</h1><div id="homeworkInputArea">
-          <input type="text" id="homeworkInput" placeholder="Add new homework..."></input>
-          <button id="addHomeworkBtn" onClick={handleClick}>Add</button>
-      </div></>
-
-
-);
+    return (
+        <>
+            <h1 id="homeworkTitle">Homeworks | Expermient </h1>
+            <div id="homeworkInputArea">
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        id="homeworkInput"
+                        placeholder="Add new homework..."
+                        value={inputValue}
+                        onChange={handleInputChange}
+                    />
+                    &nbsp;&nbsp;
+                    <button id="addHomeworkBtn" type="submit">Add</button>
+                </form>
+            </div>
+            <div id="homeworkList">
+                {homeworks.map((homeworkItem, index) => (
+                    <React.Fragment key={index}>
+                        <div className="homeworkItem">
+                            <h1 className="homeworkTitleName">{homeworkItem.title}</h1>
+                            <div className="homeworkNextTimeDateBG">{homeworkItem.nextClassTime}</div>
+                        </div>
+                        <br />
+                    </React.Fragment>
+                ))}
+            </div>
+        </>
+    );
 }
 
 export default App;
