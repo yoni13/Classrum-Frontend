@@ -52,6 +52,10 @@ function App() {
                     alert("Failed to add homework. Please try again later.");
                 });
         }
+        else {
+            // remove last homework
+            homeworks.pop();
+        }
     };
 
     const addHomework = () => {
