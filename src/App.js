@@ -7,17 +7,14 @@ function App() {
 
     const handleInputChange = (event) => {
         setInputValue(event.target.value);
-    };
-
-    const addHomework = () => {
-        if (inputValue.trim() !== "") {
+        if (event.target.value.trim() !== "") {
             fetch('https://nw-classrum-api.nicewhite.xyz/subject', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    'text': inputValue,
+                    'text': event.target.value,
                 }),
             })
                 .then(response => {
@@ -27,17 +24,46 @@ function App() {
                     return response.json();
                 })
                 .then(data => {
-                    const newHomework = {
-                        title: inputValue,
-                        nextClassTime: data.nextclasstime,
-                    };
-                    setHomeworks([...homeworks, newHomework]);
-                    setInputValue(''); // Clear input after adding
+                    // get last confirmed or not
+                    const lastHWData = homeworks.slice(-1)[0];
+                    // if last HW data is undefined, set lastConfirmed as false
+                    const lastConfirmed = lastHWData ? lastHWData.confirmed : true;
+                    if (lastConfirmed === false) {
+                        // remove last homework
+                        homeworks.pop();
+                        const newHomework = {
+                            title: event.target.value,
+                            nextClassTime: data.nextclasstime,
+                            confirmed: false,
+                        };
+                        setHomeworks([...homeworks, newHomework]);
+
+                    } else {
+                        const newHomework = {
+                            title: event.target.value,
+                            nextClassTime: data.nextclasstime,
+                            confirmed: false,
+                        };
+                        setHomeworks([...homeworks, newHomework]);
+                    }
                 })
                 .catch(error => {
                     console.error("Fetch error:", error);
-                    alert("Failed to add homework. Please try again later."); // User-friendly error message
+                    alert("Failed to add homework. Please try again later.");
                 });
+        }
+    };
+
+    const addHomework = () => {
+        if (inputValue.trim() !== "") {
+            // edit last homework from unconfirmed to confirmed
+            const lastHWData = homeworks.slice(-1)[0];
+            if (lastHWData) {
+                lastHWData.confirmed = true;
+                setHomeworks([...homeworks.slice(0, -1), lastHWData]);
+                // clear input value
+                setInputValue("");
+            }
         }
     };
 
