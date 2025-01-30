@@ -54,7 +54,8 @@ function App() {
         }
         else {
             // remove last homework
-            homeworks.pop();
+            setHomeworks([...homeworks.slice(0, -1)]);
+            setInputValue("");
         }
     };
 
@@ -80,11 +81,12 @@ function App() {
         <>
             <h1 id="homeworkTitle">Homeworks | Expermient </h1>
             <div id="homeworkInputArea">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} autoComplete="off">
                     <input
                         type="text"
                         id="homeworkInput"
                         placeholder="Add new homework..."
+                        autoFocus
                         value={inputValue}
                         onChange={handleInputChange}
                     />
