@@ -89,6 +89,7 @@ function App() {
     return (
         <>
             <h1 id="homeworkTitle">Homeworks | Experiment</h1>
+            <p id="homeworkDescription">Press space to delete the last homework</p>
             <div id="homeworkInputArea">
                 <form onSubmit={handleSubmit} autoComplete="off">
                     <input
